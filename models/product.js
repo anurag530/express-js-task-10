@@ -50,6 +50,9 @@ module.exports = class Product {
         });
       }
     }); */
+
+    return db.execute('INSERT INTO products (title,price,imageUrl,description) VALUES (?,?,?,?)',[this.title,this.price,this.imageUrl,this.description]);
+
   }
 
   static deleteById(id) {
@@ -75,5 +78,7 @@ module.exports = class Product {
       const product = products.find(p => p.id === id);
       cb(product);
     });*/
+
+    return db.execute('SELECT*FROM products WHERE products.id=?',[id]);
   }
 };
