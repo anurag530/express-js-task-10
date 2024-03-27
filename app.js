@@ -13,7 +13,7 @@ const user=require('./models/user')
 var cors=require('cors');
 
 const app = express();
-
+app.use(express.json());
 app.use(cors());
 
 app.set('view engine', 'ejs');
@@ -38,14 +38,16 @@ app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
 
-app.post('/user/add-user',async(req,res,next)=>{
+app.use('/user/add-user',async(req,res,next)=>{
 
     try{
-    const amount=req.body.amount;
-    const description=req.body.description;
-    const category=req.body.category;
+        console.log(req.body);
+    const name=req.body.name;
+    const email=req.body.email;
+    const phonenumber=req.body.phonenumber;
 
-    const data=await user.create({amount:amount,description:description,category:category});
+    const data=await user.create({name:name,email:email,phonenumber:phonenumber});
+    console.log(data);
     res.status(201).json({newUserDetail:data});
     } catch(err){
         res.status(500).json({
@@ -54,9 +56,24 @@ app.post('/user/add-user',async(req,res,next)=>{
     }
 })
 
+
+app.get('/user/get-users',async(req,res,next)=>{
+
+    try{
+    const users=await user.findAll();
+    res.status(200).json({allusers:users});
+    }catch(error){
+        console.log('Get user is failing', JSON.stringify(error))
+        res.status(500).json({
+            error:error
+        }) 
+    }
+})
+
 app.use(errorController.get404);
 
 sequelize
+// .sync({force:true})
 .sync()
 .then(result=>{
     // console.log(result);

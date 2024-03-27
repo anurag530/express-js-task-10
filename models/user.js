@@ -10,19 +10,16 @@ const user=sequelize.define('user',{
     primaryKey:true
 
   },
-  
-  amount:{
-    type:Sequelize.DOUBLE,
-    allowNull:false
-  },
-  category:{
+  name:Sequelize.STRING,
+  email:{
     type:Sequelize.STRING,
-    allowNull:false
+    unique:true,
   },
-  description:{
+  phonenumber:{
     type:Sequelize.STRING,
-    allowNull:false
+    unique:true,
   }
+
 
   
 });
