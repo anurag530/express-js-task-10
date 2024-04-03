@@ -13,11 +13,11 @@ const user=sequelize.define('user',{
   name:Sequelize.STRING,
   email:{
     type:Sequelize.STRING,
-    unique:true,
+    //unique:true,
   },
   phonenumber:{
     type:Sequelize.STRING,
-    unique:true,
+    //unique:true,
   }
 
 

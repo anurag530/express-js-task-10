@@ -8,8 +8,9 @@ const errorController = require('./controllers/error');
 
 const sequelize=require('./util/database');
 
-const user=require('./models/user')
 
+const Product=require('./models/product')
+const user=require('./models/user')
 var cors=require('cors');
 
 const app = express();
@@ -36,6 +37,15 @@ const userRoutes=require('./routes/bookin_appointment');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use((req,res,next)=>{
+    user.findByPk(1)
+    .then(createdUser=>{
+        req.createdUser=createdUser;
+        next();
+    })
+       .catch(err=>console.log(err));
+});
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
@@ -49,11 +59,29 @@ app.use('/user',userRoutes);
 
 app.use(errorController.get404);
 
+
+Product.belongsTo(user,{constraints:true,onDelete:'CASCADE'});
+user.hasMany(Product);
+
 sequelize
-// .sync({force:true})
+//.sync({force:true})
 .sync()
 .then(result=>{
-    // console.log(result);
+
+    //console.log(result);
+    return user.findByPk(1);
+    
+})
+.then(foundUser=>{
+    if(!foundUser){
+        //console.log(foundUser);
+        return user.create({name:'subh',email:'test@test.com',phonenumber:'7654321'})
+    }
+    return (foundUser);
+    // return Promise.resolve(foundUser);
+})
+.then(createdUser=>{
+    //console.log(createdUser);
     app.listen(3000);
 })
 .catch(err=>{
